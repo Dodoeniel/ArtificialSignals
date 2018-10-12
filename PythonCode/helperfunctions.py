@@ -8,6 +8,7 @@ from keras.layers import Flatten
 
 DELIMITER = ','
 
+
 def read_file_names(filename,path):
     """ read_FileNames(filename,path) returns the List of names of time series files based on the given path and name
     of the file where the names are stored. """
@@ -17,6 +18,7 @@ def read_file_names(filename,path):
         for row in reader:
             namesList.append(row)
     return namesList
+
 
 def read_labels(filename,path):
     """ read_Labels(filename,path) returns the List of Labels of time series files based on the given path and name
@@ -28,11 +30,13 @@ def read_labels(filename,path):
             labelList.append(row)
     return labelList
 
+
 def read_one_time_series(filename,path):
     """ read_one_TimeSeries(filename,path) returns the matrix of the time series data, specified by filename and path.
     The file is specified as """
     data = np.loadtxt(path+filename,delimiter=DELIMITER)
     return data
+
 
 def shape_data(name_list,path):
     """ [samples,timesteps,features]"""
@@ -44,6 +48,7 @@ def shape_data(name_list,path):
     array3d.reshape(len(name_list),array2d.shape[0],array2d.shape[1])
     return array3d
 
+
 def define_model(training_data):
     model = Sequential()
     lstm_size_l1 = 500                # size of the hidden layer 1
@@ -53,6 +58,8 @@ def define_model(training_data):
     model.add(Flatten())
     # output layer for classification
     model.add(Dense(1, activation='sigmoid'))
+    model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])  # for classification problems
+
     return model
 
 
@@ -65,7 +72,6 @@ if __name__== '__main___':
     x = shape_data(c,path)
     y = np.array(read_labels(fileNameLabels,path))
     model = define_model(x)
-    model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])  # for classification problems
     model.fit(x, y, epochs=1, batch_size=1)
 
     fileNameNames = 'NamesTest.csv'
