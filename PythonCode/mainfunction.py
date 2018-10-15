@@ -11,8 +11,9 @@ model = hf.define_model(hf.shape_data_all(trainingNames, PATH))
 
 x = hf.shape_data_all(trainingNames, PATH)
 y = np.array(trainingLabels)
-model.fit(x, y, epochs=10, batch_size=20, validation_split=0.33)
+model.fit(x, y, epochs=1, batch_size=20, validation_split=0.33)
 
+hf.get_layer_output(model,1,x)
 
 testNames = hf.read_file_names('NamesTest.csv', PATH)
 x = hf.shape_data_all(testNames, PATH)

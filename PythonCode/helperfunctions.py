@@ -6,6 +6,8 @@ from keras.layers import Dense
 from keras.layers import LSTM
 from keras.layers import Flatten
 from keras.layers import Dropout
+from keras.utils import plot_model
+from keras import backend as K
 
 DELIMITER = ','
 
@@ -73,8 +75,13 @@ def define_model(training_data):
     # output layer for classification
     m.add(Dense(1, activation='sigmoid'))
     m.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])  # for classification problems
-    plot(m, to_file='model.png', show_shapes=True, show_layer_names=True)
+    plot_model(m, to_file='model.png', show_shapes=True, show_layer_names=True)
     return m
+
+
+def get_layer_output(model, layer, data):
+    get_layer_output = K.function([model.layers[0].input, K.learning_phase()], [model.layers[layer].output])
+    return get_layer_output([data, 0])[0]
 
 
 if __name__ == '__main___':
