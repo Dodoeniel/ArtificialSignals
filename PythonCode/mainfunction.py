@@ -15,6 +15,7 @@ model.fit(x, y, epochs=1, batch_size=20, validation_split=0.33)
 
 a = hf.get_layer_output(model,1,x)
 
+
 testNames = hf.read_file_names('NamesTest.csv', PATH)
 x = hf.shape_data_all(testNames, PATH)
 y = np.array(hf.read_labels('LabelsTest.csv', PATH))
