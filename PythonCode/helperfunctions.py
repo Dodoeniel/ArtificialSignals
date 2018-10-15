@@ -71,6 +71,7 @@ def data_generator(training_name_list, training_labels, path):  # not working
         yield a
 
 
+
 def create_batch(size, count, training_name_list, training_labels, path):
     array_data = []
     label = []
