@@ -6,7 +6,7 @@ from keras.layers import Dense
 from keras.layers import LSTM
 from keras.layers import Flatten
 from keras.layers import Dropout
-from keras.utils import plot_model
+#from keras.utils import plot_model
 from keras import backend as K
 
 DELIMITER = ','
@@ -54,10 +54,33 @@ def shape_data_all(name_list, path): # for all datasets at once
 
 
 def shape_data_one(name, path):  # if only one dataset shall be used e.g. for loop training --> output 2 dimensional
-    """ [samples,timesteps,features]"""
+    """ [timesteps,features]"""
     array2d = np.array(read_one_time_series(name, path))
-    np.reshape(array2d, array2d.shape + (1,))
     return array2d
+
+
+def data_generator(training_name_list, training_labels, path):  # not working
+    i = 0
+    array = []
+    label = []
+    while True:
+        array.append(shape_data_one(training_name_list[i+l][0], path))
+        label.append(training_labels[i+l][0])
+        i += 1
+        a = array, label
+        yield a
+
+
+def create_batch(size, count, training_name_list, training_labels, path):
+    array_data = []
+    label = []
+    for l in range(0,size):
+        array_data.append(shape_data_one(training_name_list[count+l][0], path))
+        label.append(training_labels[count+l][0])
+    array_data = np.array(array_data)
+    array_data.reshape(size, array_data.shape[1], array_data.shape[2])
+    label = np.array(label)
+    return array_data, label
 
 
 def define_model(training_data):
@@ -75,7 +98,7 @@ def define_model(training_data):
     # output layer for classification
     m.add(Dense(1, activation='sigmoid'))
     m.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])  # for classification problems
-    plot_model(m, to_file='model.png', show_shapes=True, show_layer_names=True)
+#    plot_model(m, to_file='model.png', show_shapes=True, show_layer_names=True)
     return m
 
 
@@ -84,22 +107,3 @@ def get_layer_output(model, layer, data):
     return get_layer_output([data, 0])[0]
 
 
-if __name__ == '__main___':
-    path = 'TestRun1/'
-    fileNameNames = 'NamesTraining.csv'
-    fileNameLabels = 'LabelsTraining.csv'
-
-    c = read_file_names(fileNameNames, path)
-    x = shape_data_all(c, path)
-    y = np.array(read_labels(fileNameLabels, path))
-    model = define_model(x)
-    model.fit(x, y, epochs=1, batch_size=1)
-
-    fileNameNames = 'NamesTest.csv'
-    fileNameLabels = 'LabelsTest.csv'
-    c = read_file_names(fileNameNames, path)
-    x = shape_data_all(c, path)
-    y = np.array(read_labels(fileNameLabels, path))
-    score = model.evaluate(x, y, batch_size=1)
-    print(score)
-    print('Hallo')
