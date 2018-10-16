@@ -8,6 +8,8 @@ from keras.layers import Flatten
 from keras.layers import Dropout
 #from keras.utils import plot_model
 from keras import backend as K
+import math
+
 
 DELIMITER = ','
 
@@ -59,29 +61,23 @@ def shape_data_one(name, path):  # if only one dataset shall be used e.g. for lo
     return array2d
 
 
-def data_generator(training_name_list, training_labels, path):  # not working
-    i = 0
-    array = []
-    label = []
-    while True:
-        array.append(shape_data_one(training_name_list[i+l][0], path))
-        label.append(training_labels[i+l][0])
-        i += 1
-        a = array, label
-        yield a
-
-
-
 def create_batch(size, count, training_name_list, training_labels, path):
     array_data = []
     label = []
-    for l in range(0,size):
+    for l in range(0, size):
         array_data.append(shape_data_one(training_name_list[count+l][0], path))
         label.append(training_labels[count+l][0])
     array_data = np.array(array_data)
     array_data.reshape(size, array_data.shape[1], array_data.shape[2])
     label = np.array(label)
     return array_data, label
+
+
+def data_generator2(max_num_batch, training_name_list, training_labels, path, size):
+    while True:
+        for num_batch in range(max_num_batch):
+            a = create_batch(size, num_batch, training_name_list, training_labels, path)
+            yield a
 
 
 def define_model(training_data):
