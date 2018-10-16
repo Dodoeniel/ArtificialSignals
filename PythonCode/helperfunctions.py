@@ -64,7 +64,7 @@ def shape_data_one(name, path):  # if only one dataset shall be used e.g. for lo
 def create_batch(size, count, training_name_list, training_labels, path):
     array_data = []
     label = []
-    for l in range(0, size):
+    for l in range(size):
         array_data.append(shape_data_one(training_name_list[count+l][0], path))
         label.append(training_labels[count+l][0])
     array_data = np.array(array_data)
@@ -73,11 +73,11 @@ def create_batch(size, count, training_name_list, training_labels, path):
     return array_data, label
 
 
-def data_generator2(max_num_batch, training_name_list, training_labels, path, size):
-    while True:
-        for num_batch in range(max_num_batch):
-            a = create_batch(size, num_batch, training_name_list, training_labels, path)
-            yield a
+def data_generator2(training_name_list, training_labels, path, size=1):
+    for num_batch in range(len(training_name_list)):
+        a = create_batch(size, num_batch, training_name_list, training_labels, path)
+        print(num_batch)
+        yield a
 
 
 def define_model(training_data):
