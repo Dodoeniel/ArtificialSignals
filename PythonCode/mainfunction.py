@@ -17,9 +17,9 @@ model = hf.define_model(hf.shape_data_all(trainingNames[0:2], PATH))  # only two
 y = np.array(trainingLabels)
 #model.fit(x, y, epochs=1, batch_size=20, validation_split=0.33)
 
-steps_epoch = 5
+steps_epoch = len(trainingNames)
 size = 1
-model.fit_generator(hf.data_generator2(trainingNames, y, PATH), steps_per_epoch=steps_epoch)
+model.fit_generator(hf.data_generator2(trainingNames, y, PATH), steps_per_epoch=600, epochs=1)
 
 
 
