@@ -73,9 +73,9 @@ def create_batch(size, count, training_name_list, training_labels, path):
     return array_data, label
 
 
-def data_generator2(training_name_list, training_labels, path, size=1):
-    for num_batch in range(len(training_name_list)):
-        a = create_batch(size, num_batch, training_name_list, training_labels, path)
+def data_generator(name_list, labels, path, size=1):
+    for num_batch in range(len(name_list)):
+        a = create_batch(size, num_batch, name_list, labels, path)
         print(num_batch)
         yield a
 

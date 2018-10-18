@@ -16,33 +16,18 @@ model = hf.define_model(hf.shape_data_all(trainingNames[0:2], PATH))  # only two
 
 y = np.array(trainingLabels)
 #model.fit(x, y, epochs=1, batch_size=20, validation_split=0.33)
+validationNames = hf.read_file_names('NamesValidation.csv', PATH)
+validationLabels = np.array(hf.read_labels('LabelsValidation', PATH))
 
 steps_epoch = len(trainingNames)
 size = 1
-model.fit_generator(hf.data_generator2(trainingNames, y, PATH), steps_per_epoch=600, epochs=1)
-
-
-
-# batch_size = 50
-# count1 = math.floor(len(trainingNames)/batch_size)
-# remainder_size = len(trainingNames) - count1*batch_size
-# epochs = 10
-
-# for l in range(epochs):
-#     for i in range(count1):
-#         batch = hf.create_batch(batch_size, i, trainingNames, y, PATH)
-#         model.train_on_batch(batch[0], batch[1])
-#         print('Training Batch ' + str(i))
-#     if remainder_size != 0:
-#         batch = hf.create_batch(remainder_size, count1, trainingNames, y, PATH)
-#         model.train_on_batch(batch[0], batch[1])
-#         print('Training Remainder')
-
-
+model.fit_generator(hf.data_generator(trainingNames, y, PATH),
+                    validation_data=hf.data_generator(validationNames, validationLabels, PATH),
+                    validation_steps=len(validationNames), steps_per_epoch=len(trainingNames), epochs=10,
+                    use_multiprocessing=True)
 
 x = hf.shape_data_all(trainingNames, PATH)
-a = hf.get_layer_output(model, 1, x)
-
+activationMatrix = hf.get_layer_output(model, 1, x)
 
 
 testNames = hf.read_file_names('NamesTest.csv', PATH)
