@@ -103,4 +103,3 @@ def get_layer_output(model, layer, data):
     get_layer_output = K.function([model.layers[0].input, K.learning_phase()], [model.layers[layer].output])
     return get_layer_output([data, 0])[0]
 
-
